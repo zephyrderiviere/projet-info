@@ -1,6 +1,7 @@
 #ifndef INTRINSICS
 #define INTRINSICS
 
+#include <cstddef>
 #define AVX 0
 #define SSE42 1
 
