@@ -1,0 +1,35 @@
+#ifndef INTRINSICS_SSE42
+#define INTRINSICS_SSE42
+
+#include "Intrinsics.hpp"
+#include <nmmintrin.h>
+
+template<> struct instructionsSetTraits<SSE42> {
+	using type = __m128d;
+	static const size_t size = 2;
+};
+
+template<> class IntrensicsInterface<SSE42> {
+	public:
+		using vect_t = typename instructionsSetTraits<SSE42>::type;
+		
+		static const size_t vect_sz = instructionsSetTraits<SSE42>::size;
+		
+		static vect_t zeros() {
+			return _mm_set_pd(0,0);
+		}
+		
+		static vect_t load(double* d) {
+			return _mm_load_pd(d);
+		}
+		
+		static vect_t add(vect_t a, vect_t b) {
+			return _mm_add_pd(a, b);
+		}
+		
+		static void store(double* d, vect_t a) {
+			_mm_store_pd(d, a);
+		}
+};
+
+#endif
