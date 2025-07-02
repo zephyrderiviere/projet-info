@@ -2,6 +2,7 @@
 #define INTRINSICS_SSE42
 
 #include "Intrinsics.hpp"
+#include <emmintrin.h>
 #include <nmmintrin.h>
 
 template<> struct instructionsSetTraits<SSE42> {
@@ -22,13 +23,24 @@ template<> class IntrensicsInterface<SSE42> {
 		static vect_t load(double* d) {
 			return _mm_load_pd(d);
 		}
+		static vect_t loadu(double* d) {
+			return _mm_loadu_pd(d);
+		}
 		
 		static vect_t add(vect_t a, vect_t b) {
 			return _mm_add_pd(a, b);
 		}
+
+		static vect_t mul(vect_t a, vect_t b) {
+			return _mm_mul_pd(a, b);
+		}
 		
 		static void store(double* d, vect_t a) {
 			_mm_store_pd(d, a);
+		}
+
+		static void storeu(double* d, vect_t a) {
+			_mm_storeu_pd(d, a);
 		}
 };
 

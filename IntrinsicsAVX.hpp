@@ -22,13 +22,24 @@ template<> class IntrensicsInterface<AVX> {
 		static vect_t load(double* d) {
 			return _mm256_load_pd(d);
 		}
+		static vect_t loadu(double* d) {
+			return _mm256_loadu_pd(d);
+		}
 		
 		static vect_t add(vect_t a, vect_t b) {
 			return _mm256_add_pd(a, b);
 		}
+
+		static vect_t mul(vect_t a, vect_t b) {
+			return _mm256_mul_pd(a, b);
+		}
 		
 		static void store(double* d, vect_t a) {
 			_mm256_store_pd(d, a);
+		}
+
+		static void storeu(double* d, vect_t a) {
+			_mm256_storeu_pd(d, a);
 		}
 };
 
