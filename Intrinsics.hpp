@@ -3,17 +3,33 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <cstddef>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <boost/algorithm/string.hpp>
 
 enum InstructionsSet {
+	NONE = -1,
 	AVX512,
 	AVX2,
 	AVX,
 	SSE42,
-	SSE2
+	SSE2,
 };
+
+
+inline std::ostream& operator<<(std::ostream& o, InstructionsSet set) {
+	switch(set) {
+		case NONE : 	return o << "NONE";
+		case AVX512:	return o << "AVX512";
+		case AVX2:		return o << "AVX2";
+		case AVX:		return o << "AVX";
+		case SSE42:		return o << "SSE4.2";	 
+		case SSE2:		return o << "SSE2";	 
+	}
+
+	return o;
+}
 
 
 template <int instructionsSet> struct reg_undef_t {};
@@ -45,52 +61,30 @@ class IntrensicsInterface {
 };
 
 
-inline int setIntrinsics(std::string const& flag) {
-	if (boost::iequals(flag, "default")) {
-		if (__builtin_cpu_supports("avx2")) {
-      		return AVX2;
-		} else if (__builtin_cpu_supports("avx")) {
-      		return AVX;
-		} else if (__builtin_cpu_supports("sse4.2")) {
-			return SSE42;
-		} else if (__builtin_cpu_supports("sse2")) {
-      		return SSE2;
-		} else {
-			throw std::invalid_argument("No Intrinsics detected. Program Aborted.");
-		}
-	}
-	if (boost::iequals(flag, "SSE2")) {
-		if (__builtin_cpu_supports("sse2")) {
-			return SSE2;
-		} else {
-			throw std::invalid_argument("Your CPU doesn't support SSE2 instructions.");
-		}
-	}
-	if (boost::iequals(flag, "SSE4.2")) {
+inline InstructionsSet setIntrinsics(std::string const& flag) {
+	if (flag == "default") {
+		if (__builtin_cpu_supports("avx")) {
+      	   	return AVX;
+		    }
 		if (__builtin_cpu_supports("sse4.2")) {
 			return SSE42;
-		} else {
-			throw std::invalid_argument("Your CPU doesn't support SSE4.2 instructions.");
-		}
-	}
+    	}
+		std::cerr << "No intrinsics detected. Using regular double operations\n";
+        return NONE;
+    } 
+	if (boost::iequals(flag, "SSE4.2")) {
+        //We check if the CPU supports the requested flag
+		return (__builtin_cpu_supports("sse4.2"))  ? SSE42 : throw std::invalid_argument("Your CPU doesn't support SSE4.2 instructions.");
+	} 
 	if (boost::iequals(flag, "AVX")) {
-		if (__builtin_cpu_supports("avx")) {
-			return AVX;
-		} else {
-			throw std::invalid_argument("Your CPU doesn't support AVX instructions.");
-		}
-	}
-	if (boost::iequals(flag, "AVX2")) {
-		if (__builtin_cpu_supports("avx2")) {
-			return AVX2;
-		} else {
-			throw std::invalid_argument("Your CPU doesn't support AVX2 instructions.");
-		}
-	}
+        //We check if the CPU supports the requested flag
+		return (__builtin_cpu_supports("avx"))     ? AVX   : throw std::invalid_argument("Your CPU doesn't support AVX instructions.");
+    }
+	if (boost::iequals(flag, "none")) {
+        return NONE;  
+    }
 
 	throw std::invalid_argument("Not a valid intrinsics instructions set. Program Aborted.");
-
-	return -1;
 }
 
 #endif

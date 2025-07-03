@@ -15,30 +15,30 @@ template<> class IntrensicsInterface<AVX> {
 		
 		static const size_t vect_sz = instructionsSetTraits<AVX>::size;
 		
-		static vect_t zeros() {
+		inline static vect_t zeros() {
 			return _mm256_set_pd(0,0,0,0);
 		}
 		
-		static vect_t load(double* d) {
+		inline static vect_t load(double* d) {
 			return _mm256_load_pd(d);
 		}
-		static vect_t loadu(double* d) {
+		inline static vect_t loadu(double* d) {
 			return _mm256_loadu_pd(d);
 		}
 		
-		static vect_t add(vect_t a, vect_t b) {
+		inline static vect_t add(vect_t a, vect_t b) {
 			return _mm256_add_pd(a, b);
 		}
 
-		static vect_t mul(vect_t a, vect_t b) {
+		inline static vect_t mul(vect_t a, vect_t b) {
 			return _mm256_mul_pd(a, b);
 		}
 		
-		static void store(double* d, vect_t a) {
+		inline static void store(double* d, vect_t a) {
 			_mm256_store_pd(d, a);
 		}
 
-		static void storeu(double* d, vect_t a) {
+		inline static void storeu(double* d, vect_t a) {
 			_mm256_storeu_pd(d, a);
 		}
 };
