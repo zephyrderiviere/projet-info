@@ -20,9 +20,9 @@ int main(int argc, char** argv) {
     po::options_description desc;
     desc.add_options()
         ("help", "Produce help message")
-        ("size,s", po::value<int>(), "Set the size of the matricees for the program")
-        ("set-intrin", po::value<std::string>(),  
-            "Set a specification of the intrinsics instruction set you want to use. If not specified, will default to the maximum available on the machine.");
+        ("size,s", po::value<int>(), "Set the size of the matrices for the program")
+        ("intrin,i", po::value<std::string>(),  
+            "Set a specification of the intrinsics instruction set you want to use. If not specified, will default to the maximum available on the machine.\n  Available options are :\n    none : don't use the intel intrinsics\n    sse4.2 : use the SSE4.2 instructions set\n    avx : use the AVX instructions set");
 
 
     po::variables_map args;
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 
     try {
         //Looking for the appropriate intrinsics instructions set
-        std::string flag = (args.count("set-intrin") ? args["set-intrin"].as<std::string>() : "default");
+        std::string flag = (args.count("intrin") ? args["intrin"].as<std::string>() : "default");
         InstructionsSet set = setIntrinsics(flag);
 
 
